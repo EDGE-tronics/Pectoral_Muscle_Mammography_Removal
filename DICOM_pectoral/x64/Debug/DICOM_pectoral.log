@@ -1,0 +1,14 @@
+﻿  Source.cpp
+c:\users\genoma\source\repos\dicom_pectoral\dicom_pectoral\source.cpp(15): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\genoma\source\repos\dicom_pectoral\dicom_pectoral\source.cpp(16): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+c:\users\genoma\source\repos\dicom_pectoral\dicom_pectoral\source.cpp(63): warning C4244: 'initializing': conversion from '_Tp' to 'float', possible loss of data
+          with
+          [
+              _Tp=double
+          ]
+c:\users\genoma\source\repos\dicom_pectoral\dicom_pectoral\source.cpp(64): warning C4244: 'initializing': conversion from '_Tp' to 'float', possible loss of data
+          with
+          [
+              _Tp=double
+          ]
+  DICOM_pectoral.vcxproj -> C:\Users\Genoma\source\repos\DICOM_pectoral\x64\Debug\DICOM_pectoral.exe
