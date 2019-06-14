@@ -57,8 +57,6 @@ void datos(Mat image, string etapa)
 	float D = dev.val[0];
 	cout << ">>>>>>> " << etapa << ": Minimo = " << min << "  Maximo = " << max << " MEDIA = " << M << " Desviacion = " << D << " Tamano: " << image.rows << " , " << image.cols << endl << endl;
 	namedWindow(etapa, CV_WINDOW_KEEPRATIO);
-
-
 	imshow(etapa, image);
 
 }
@@ -66,29 +64,31 @@ void datos(Mat image, string etapa)
 
 void eliminacionPectoral(Mat &original) {
 
-	Mat src = original.clone();
+	
 	bool derecha = false;
 	int der = 0;
 	int izq = 0;
 
 	// determinar de que lado esta el pecho y reflejar
-	for (int i = 0; i < src.cols / 2; i++) {
-		for (int k = 0; k < src.rows / 2; k++) {
-			if (src.at<uchar>(k, i) > 0) {
+	for (int i = 0; i < original.cols / 2; i++) {
+		for (int k = 0; k < original.rows / 2; k++) {
+			if (original.at<uchar>(k, i) > 0) {
 				izq++;
 			}
-			if (src.at<uchar>(k, src.cols - i - 1) > 0) {
+			if (original.at<uchar>(k, original.cols - i - 1) > 0) {
 				der++;
 			}
 		}
 	}
-	if (der > izq) {
+	if (der < izq) {
+		flip(original, original, 1);
+	}
+	else {
 		derecha = true;
 	}
-	if (!derecha) {
-		flip(src, src, 1);
-	}
-	
+
+	Mat src = original.clone();
+
 	// Deteccion de objetos en la imagen
 	Mat binaria;
 	threshold(src, binaria, 0, 255, THRESH_BINARY | CV_THRESH_OTSU);
@@ -121,6 +121,8 @@ void eliminacionPectoral(Mat &original) {
 	Mat roi = src(tejido);
 	Mat bin_roi = binaria(tejido);
 
+
+
 	// close-up de la esquina donde esta el musculo
 	int x = 0;
 	int y = 0;
@@ -152,11 +154,10 @@ void eliminacionPectoral(Mat &original) {
 	sort(Yv.begin(), Yv.end(), greater<int>());
 	y = Yv[(tam + 1) / 2];
 
-	//cout << " X: " << x << " Y: " << y << " Yv: " << Yv[5] << endl;
-
 	musculo = Rect(x, 0, roi.cols - 1 - x, y);
 	region = roi(musculo);
 	rectangle(roi, Point(x, 0), Point(bin_roi.cols - 1, y), Scalar(255), 2, 8, 0);
+
 
 	//Ecualizacion global del histograma
 
@@ -170,7 +171,6 @@ void eliminacionPectoral(Mat &original) {
 	for (int i = 0; i < region.cols; i++) {
 		for (int k = 0; k < region.rows; k++)
 		{
-
 			luminancia += region_eq.at<uchar>(k, i);
 			area_triangulo++;
 
@@ -185,6 +185,7 @@ void eliminacionPectoral(Mat &original) {
 
 	luminancia /= area_triangulo;
 
+
 	//Detección del musculo
 
 	Mat detec;
@@ -194,7 +195,6 @@ void eliminacionPectoral(Mat &original) {
 	Mat detec_morph;
 	Mat kernel = getStructuringElement(MORPH_ELLIPSE, Size(13, 13));
 	morphologyEx(detec, detec_morph, MORPH_OPEN, kernel);
-
 
 	vector<vector<cv::Point>> cont_musculo;
 
@@ -218,8 +218,8 @@ void eliminacionPectoral(Mat &original) {
 	detec_morph = Mat::zeros(detec_morph.rows, detec_morph.cols, CV_8U);
 
 	// Aajuste de curva al borde de la deteccion
+		Mat mascara = curva(detec_morph, cont_musculo[indice]);
 
-	Mat mascara = curva(detec_morph, cont_musculo[indice]);
 
 	// Implementacion en la imagen original
 

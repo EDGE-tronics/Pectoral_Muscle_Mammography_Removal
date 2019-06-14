@@ -1,10 +1,11 @@
-//#ifndef Procesamiento_H
-//#define Procesamiento_H
+#ifndef PROCESAMIENTO_H
+#define PROCESAMIENTO_H
 
 
 #include <iostream>
 #include <stdlib.h>
 #include <fstream>
+#include <sstream>      
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/core/utility.hpp>
@@ -20,4 +21,4 @@ void eliminacionPectoral(Mat &src);							// Elimina el musculo pectoral de la i
 Mat Clahe(Mat original);									// Aumento del contraste local mediante el metodo CLAHE
 
 
-Mat filtro_mediana_adaptativo(Mat src, int w_max);
+#endif // PROCESAMIENTO_H

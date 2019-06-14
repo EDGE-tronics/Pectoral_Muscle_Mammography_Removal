@@ -1,74 +1,8 @@
 #include "Procesamiento.h"
 
 
-
-Mat filtro_mediana_adaptativo(Mat src, int w_max) {
-
-	if (w_max < 3) {
-
-		cout << "ERROR: TAMANO MAXIMO DE VENTANA MENOR A 3";
-		return src;
-	}
-	int nulo = (w_max + 1) / 2;
-	int tam_vector = w_max * w_max;
-	vector<int> pixeles(tam_vector);
-	int tam_ventana = 5;
-	int cont = 0;
-	int a = (tam_ventana-1)/2;
-	int xc = 0;
-	int yc = 0;
-	int x, y, i, j;
-	Mat resultado(src.size(),CV_8UC1);
-
-	for ( x = nulo; x < src.cols - nulo; x++) {
-		for ( y = nulo; y < src.rows - nulo; y++) {
-
-			for ( i = -a; i <= a; i++) {
-				for ( j = -a; j <= a; j++) {
-
-					//xc = x + i;
-					//yc = y + j;
-/*
-					if (xc < 0) {
-						xc = 1 - xc;
-					}
-					else if (xc >= src.cols) {
-					
-						xc = 2 * src.cols - xc - 1;
-					
-					}
-
-					if (yc < 0) {
-						yc = 1 - yc;
-					}
-					else if (yc >= src.rows) {
-
-						yc = 2 * src.rows - yc - 1;
-
-					}
-*/
-					pixeles[cont] = src.at<uchar>(y+j, x+i);
-					cont++;
-				}
-			}
-			sort(pixeles.begin(), pixeles.begin() + (tam_vector));
-			///////////////
-			//cout<<x<<","<<y<<endl;
-			////////////////
-			resultado.at<uchar>(y,x)=pixeles[(tam_vector-1)/2];
-			cont = 0;
-		}
-	}
-
-	return resultado;
-}
-
-
-
-
-
 String InputDir = "C:/Users/Genoma/Desktop/DICOM/imagenes/";
-String Nombre = "20587664_f4b2d377f43ba0bd_MG_R_ML_ANON.jpg";
+String Nombre = "Mamo MLO (I)_130420191110.jpg";
 
 int main()
 {
@@ -87,13 +21,39 @@ int main()
 	// Elimina el pectoral
 	eliminacionPectoral(src);
 	datos(src, "RESULTADO");
-	imwrite("C:/Users/Genoma/Desktop/DICOM/imagenes/clahe/Result_"+Nombre, src);
+
+	// Mediana 7x7
+	Mat mediana;
+	medianBlur(src, mediana, 7);
+	datos(mediana, "mediana");
 
 	// Auenta el contraste local
-	Mat contraste = Clahe(src);
+	Mat contraste = Clahe(mediana);
 	datos(contraste,"CLAHE");
-
 	
+	imwrite("C:/Users/Genoma/Desktop/DICOM/imagenes/mediana7/Result_" + Nombre, contraste);
+
+	/*
+
+	Mat prueba = Mat::eye(7, 7, CV_8UC1) *255;
+	datos(prueba,"prueba");
+
+	ofstream IMAGEN;
+	IMAGEN.open("imagen.txt");
+
+	for (int j = 0; j < prueba.rows; j++)
+	{
+		for (int i = 0; i < prueba.cols; i++)
+		{
+			IMAGEN << to_string(prueba.at<uint8_t>(j, i)) << " ";
+			
+		}
+		IMAGEN << endl;
+	}
+	IMAGEN.close();
+
+	*/
+
 	waitKey(0);
 	return 0;
 
