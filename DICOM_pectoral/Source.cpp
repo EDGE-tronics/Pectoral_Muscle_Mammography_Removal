@@ -84,10 +84,12 @@ int main()
 
 	datos(src, "Original");
 
+	// Elimina el pectoral
 	eliminacionPectoral(src);
 	datos(src, "RESULTADO");
-	//imwrite("C:/Users/Genoma/Desktop/DICOM/imagenes/resultados_3er/Result_"+Nombre, original);
+	imwrite("C:/Users/Genoma/Desktop/DICOM/imagenes/clahe/Result_"+Nombre, src);
 
+	// Auenta el contraste local
 	Mat contraste = Clahe(src);
 	datos(contraste,"CLAHE");
 
