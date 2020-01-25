@@ -33,27 +33,6 @@ int main()
 	
 	imwrite("C:/Users/Genoma/Desktop/DICOM/imagenes/mediana7/Result_" + Nombre, contraste);
 
-	/*
-
-	Mat prueba = Mat::eye(7, 7, CV_8UC1) *255;
-	datos(prueba,"prueba");
-
-	ofstream IMAGEN;
-	IMAGEN.open("imagen.txt");
-
-	for (int j = 0; j < prueba.rows; j++)
-	{
-		for (int i = 0; i < prueba.cols; i++)
-		{
-			IMAGEN << to_string(prueba.at<uint8_t>(j, i)) << " ";
-			
-		}
-		IMAGEN << endl;
-	}
-	IMAGEN.close();
-
-	*/
-
 	waitKey(0);
 	return 0;
 
